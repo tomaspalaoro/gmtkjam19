@@ -8,6 +8,7 @@ public class dragObject : MonoBehaviour
 	bool dragging;
 	bool useGravity;
 	bool enArea;
+	bool colisionando;
 	Vector3 mouseStartPos;
 	Vector3 playerStartPos;
 	Vector3 newPos;
@@ -22,6 +23,8 @@ public class dragObject : MonoBehaviour
 	{
 		dragging = false;
 		useGravity = true;
+		enArea = false;
+		colisionando = false;
 	}
 
 	private void Update()
@@ -38,7 +41,8 @@ public class dragObject : MonoBehaviour
 			//Posición nueva
 			newPos = GetMousePos() - mouseStartPos;
 
-			gameObject.transform.position = playerStartPos + newPos; //mover objeto a nueva posición
+			//Mover objeto
+			if (!colisionando) gameObject.transform.position = playerStartPos + newPos;
 
 			if (Input.GetMouseButtonDown(1)) //pulsar botón secundario
 			{
@@ -56,13 +60,15 @@ public class dragObject : MonoBehaviour
 
 	private void OnMouseDown() //pulsar click izquierdo en el collider
 	{
-		if (enArea)
+		if (enArea && !colisionando)
 		{
 			dragging = true;
 
 			//Posiciones iniciales al empezar a arrastrar
 			mouseStartPos = GetMousePos();
 			playerStartPos = gameObject.transform.position;
+
+			Debug.Log("OnMouseDown");
 		}		
 	}
 
@@ -76,7 +82,7 @@ public class dragObject : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (dragging)
+		if (dragging && !colisionando)
 		{
 			if (useGravity) useGravity = false;
 			rb2d.velocity = Vector3.zero;
@@ -118,10 +124,35 @@ public class dragObject : MonoBehaviour
 	{
 		if (collision.collider.gameObject.CompareTag("wall"))
 		{
+
+			Debug.Log("Colisionando");
+			if (!colisionando) colisionando = true;
 			//Stop Dragging
 			if (dragging) dragging = false;
 			if (!useGravity) useGravity = true;
+
+			// how much the character should be knocked back
+			var magnitude = 1000;
+			// calculate force vector
+			var force = transform.position - collision.transform.position;
+			// normalize force vector to get direction only and trim magnitude
+			force.Normalize();
+			rb2d.AddForce(force * magnitude);
+			StartCoroutine(AcabarColision());
 		}
+		
+	}
+
+	private void OnCollisionExit2D(Collision2D collision)
+	{
+		
+	}
+
+	private IEnumerator AcabarColision()
+	{
+		yield return new WaitForSeconds(0.5f);
+		if (colisionando) colisionando = false;
+		Debug.Log("Libre");
 	}
 	*/
 }
