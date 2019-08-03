@@ -5,6 +5,7 @@ using UnityEngine;
 public class dragObject : MonoBehaviour
 {
 	Rigidbody2D rb2d;
+	GameObject particulas;
 	bool dragging;
 	bool useGravity;
 	bool enArea;
@@ -16,15 +17,18 @@ public class dragObject : MonoBehaviour
 
 	private void Awake()
 	{
-		rb2d = gameObject.GetComponent<Rigidbody2D>();
+		rb2d = GetComponent<Rigidbody2D>();
+		particulas = transform.GetChild(0).gameObject;
 	}
 
 	private void Start()
 	{
+		//Inicializar parámetros
 		dragging = false;
 		useGravity = true;
 		enArea = false;
 		colisionando = false;
+		particulas.SetActive(false);
 	}
 
 	private void Update()
@@ -34,6 +38,7 @@ public class dragObject : MonoBehaviour
 			//Stop Dragging
 			dragging = false;
 			if (!useGravity) useGravity = true;
+			if (particulas.activeSelf) particulas.SetActive(false);
 		}		
 
 		if (dragging)
@@ -55,6 +60,8 @@ public class dragObject : MonoBehaviour
 					rb2d.rotation = 0f;
 				}				
 			}
+
+			if (!particulas.activeSelf) particulas.SetActive(true);
 		}
 	}
 
@@ -115,6 +122,7 @@ public class dragObject : MonoBehaviour
 		//Stop Dragging
 		if (dragging) dragging = false;
 		if (!useGravity) useGravity = true;
+		if (particulas.activeSelf) particulas.SetActive(false);
 
 		Debug.Log("area left");
 	}
