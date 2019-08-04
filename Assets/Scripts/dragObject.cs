@@ -6,13 +6,16 @@ public class dragObject : MonoBehaviour
 {
 	Rigidbody2D rb2d;
 	GameObject particulas;
+	public int potencia;
+	public int newDrag;
 	bool dragging;
 	bool useGravity;
 	bool enArea;
-	bool colisionando;
-	Vector3 mouseStartPos;
-	Vector3 playerStartPos;
-	Vector3 newPos;
+	//bool colisionando;
+	//Vector3 mouseStartPos;
+	//Vector3 playerStartPos;
+	//Vector3 newPos;
+	RaycastHit2D hit;
 
 	//public GameObject mago;
 
@@ -29,28 +32,58 @@ public class dragObject : MonoBehaviour
 		dragging = false;
 		useGravity = true;
 		enArea = false;
-		colisionando = false;
+		//colisionando = false;
 		particulas.SetActive(false);
+	}
+	private Vector3 GetMousePos() //conseguir las coordenadas del ratón 2d del ratón
+	{
+		//Posición x,y en píxeles del ratón, en dos dimensiones
+		Vector3 mousePos = Input.mousePosition;
+
+		return Camera.main.ScreenToWorldPoint(mousePos);
 	}
 
 	private void Update()
-	{		
+	{
+		if (Input.GetMouseButtonDown(0) && (hit.collider != null)) //pulsar click izquierdo en el collider
+		{
+			if (enArea && hit.collider.tag == "platform" && !dragging) // && !colisionando
+			{
+				//Start dragging
+				dragging = true;
+				mageMovement.usandoMagia = true;
+
+				//Posiciones iniciales al empezar a arrastrar
+				//mouseStartPos = GetMousePos();
+				//playerStartPos = gameObject.transform.position;
+
+				Debug.Log("OnMouseDown");
+			}
+			else
+			{
+				Debug.Log(hit.collider.tag);
+			}
+		}
 		if (Input.GetMouseButtonUp(0)) //soltar click izquierdo
 		{
 			//Stop Dragging
-			dragging = false;
-			if (!useGravity) useGravity = true;
-			if (particulas.activeSelf) particulas.SetActive(false);
-			if (mageMovement.usandoMagia) mageMovement.usandoMagia = false;
+			StopDragging();
 		}		
 
 		if (dragging)
 		{
 			//Posición nueva
-			newPos = GetMousePos() - mouseStartPos;
+			//newPos = GetMousePos() - mouseStartPos;
 
 			//Mover objeto
-			if (!colisionando) gameObject.transform.position = playerStartPos + newPos;
+			//if (!colisionando) gameObject.transform.position = playerStartPos + newPos;
+
+			var dir = GetMousePos() - transform.position;
+
+			rb2d.drag = newDrag;
+			rb2d.angularDrag = newDrag - 1;
+
+			rb2d.AddForce(dir * potencia);
 
 			if (Input.GetMouseButtonDown(1)) //pulsar botón secundario
 			{
@@ -62,43 +95,21 @@ public class dragObject : MonoBehaviour
 				{
 					rb2d.rotation = 0f;
 				}				
-			}
+			}			
 
 			if (!particulas.activeSelf) particulas.SetActive(true);
 		}
 	}
 
-	private void OnMouseDown() //pulsar click izquierdo en el collider
-	{
-		if (enArea && !colisionando)
-		{
-			//Start dragging
-			dragging = true;
-			mageMovement.usandoMagia = true;
-
-			//Posiciones iniciales al empezar a arrastrar
-			mouseStartPos = GetMousePos();
-			playerStartPos = gameObject.transform.position;
-
-			Debug.Log("OnMouseDown");
-		}		
-	}
-
-	private Vector3 GetMousePos() //conseguir las coordenadas del ratón 2d del ratón
-	{
-		//Posición x,y en píxeles del ratón, en dos dimensiones
-		Vector3 mousePos = Input.mousePosition;
-
-		return Camera.main.ScreenToWorldPoint(mousePos);
-	}
-
 	private void FixedUpdate()
 	{
-		if (dragging && !colisionando)
+		hit = Physics2D.Raycast(GetMousePos(), Vector2.zero);
+
+		if (dragging) // && !colisionando
 		{
 			if (useGravity) useGravity = false;
-			rb2d.velocity = Vector3.zero;
-			rb2d.angularVelocity = 0f;
+			//rb2d.velocity = Vector3.zero;
+			//rb2d.angularVelocity = 0f;
 			//gameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
 
 			//gameObject.transform.position = playerStartPos + newPos; //mover objeto a nueva posición
@@ -123,48 +134,18 @@ public class dragObject : MonoBehaviour
 	{
 		if (enArea) enArea = false;
 		//Stop Dragging
-		if (dragging) dragging = false;
-		if (!useGravity) useGravity = true;
-		if (particulas.activeSelf) particulas.SetActive(false);
-		if (mageMovement.usandoMagia) mageMovement.usandoMagia = false;
+		StopDragging();		
 
 		Debug.Log("area left");
 	}
-	
-	/*
-	private void OnCollisionEnter2D(Collision2D collision)
+
+	public void StopDragging()
 	{
-		if (collision.collider.gameObject.CompareTag("wall"))
-		{
-
-			Debug.Log("Colisionando");
-			if (!colisionando) colisionando = true;
-			//Stop Dragging
-			if (dragging) dragging = false;
-			if (!useGravity) useGravity = true;
-
-			// how much the character should be knocked back
-			var magnitude = 1000;
-			// calculate force vector
-			var force = transform.position - collision.transform.position;
-			// normalize force vector to get direction only and trim magnitude
-			force.Normalize();
-			rb2d.AddForce(force * magnitude);
-			StartCoroutine(AcabarColision());
-		}
-		
+		if (dragging) dragging = false;
+		rb2d.drag = 0f;
+		rb2d.angularDrag = 0f;
+		if (!useGravity) useGravity = true;
+		if (particulas.activeSelf) particulas.SetActive(false);
+		if (mageMovement.usandoMagia) mageMovement.usandoMagia = false;
 	}
-
-	private void OnCollisionExit2D(Collision2D collision)
-	{
-		
-	}
-
-	private IEnumerator AcabarColision()
-	{
-		yield return new WaitForSeconds(0.5f);
-		if (colisionando) colisionando = false;
-		Debug.Log("Libre");
-	}
-	*/
 }
