@@ -8,6 +8,7 @@ public class sceneController : MonoBehaviour
 	public GameObject platform;
 	public GameObject bg;
 	public GameObject blackPanel;
+	public GameObject endScreen;
 	public Vector3 primeraPos;
 	public Vector3 segundaPos;
 	public Vector3 terceraPos;
@@ -25,7 +26,7 @@ public class sceneController : MonoBehaviour
 
 	private void Start()
 	{
-		area = 4; //nivel menos uno
+		area = 0; //nivel menos uno
 		player.transform.position = primeraPos;
 
 		platform.SetActive(true);
@@ -34,6 +35,7 @@ public class sceneController : MonoBehaviour
 		platform.transform.position = platformPosition;
 
 		blackPanel.SetActive(false);
+		endScreen.SetActive(false);
 	}
 
 	private void Update()
@@ -95,7 +97,7 @@ public class sceneController : MonoBehaviour
 		switch (area)
 		{
 			case 5:
-				Debug.Log("Juego acabado");
+				endScreen.SetActive(true);
 				break;
 			case 4:
 				player.transform.position = quintaPos;

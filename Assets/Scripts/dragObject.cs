@@ -19,6 +19,7 @@ public class dragObject : MonoBehaviour
 	RaycastHit2D hit;
 
 	public Rigidbody2D roca;
+	public GameObject inicioGUI;
 
 
 	private void Awake()
@@ -37,6 +38,8 @@ public class dragObject : MonoBehaviour
 		particulas.SetActive(false);
 
 		roca.gravityScale = 0;
+
+		inicioGUI.SetActive(true);
 	}
 	private Vector3 GetMousePos() //conseguir las coordenadas del ratón 2d del ratón
 	{
@@ -59,6 +62,8 @@ public class dragObject : MonoBehaviour
 				//Posiciones iniciales al empezar a arrastrar
 				//mouseStartPos = GetMousePos();
 				//playerStartPos = gameObject.transform.position;
+
+				inicioGUI.SetActive(false);
 
 				Debug.Log("OnMouseDown");
 			}
