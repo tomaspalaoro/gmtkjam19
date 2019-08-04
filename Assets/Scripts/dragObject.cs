@@ -6,8 +6,9 @@ public class dragObject : MonoBehaviour
 {
 	Rigidbody2D rb2d;
 	GameObject particulas;
-	public int potencia;
+	public int potenciaMagica;
 	public int newDrag;
+	public float velGiro;
 	bool dragging;
 	bool useGravity;
 	bool enArea;
@@ -83,10 +84,12 @@ public class dragObject : MonoBehaviour
 			rb2d.drag = newDrag;
 			rb2d.angularDrag = newDrag - 1;
 
-			rb2d.AddForce(dir * potencia);
+			rb2d.AddForce(dir * potenciaMagica);
 
-			if (Input.GetMouseButtonDown(1)) //pulsar botón secundario
+			if (Input.GetMouseButton(1)) //pulsar botón secundario
 			{
+				rb2d.AddTorque(velGiro, ForceMode2D.Force);
+				/*
 				if (rb2d.rotation == 0f)
 				{
 					rb2d.rotation = -90f;
@@ -95,6 +98,8 @@ public class dragObject : MonoBehaviour
 				{
 					rb2d.rotation = 0f;
 				}				
+				*/
+				//Debug.Log("torque");
 			}			
 
 			if (!particulas.activeSelf) particulas.SetActive(true);
@@ -111,8 +116,6 @@ public class dragObject : MonoBehaviour
 			//rb2d.velocity = Vector3.zero;
 			//rb2d.angularVelocity = 0f;
 			//gameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
-
-			//gameObject.transform.position = playerStartPos + newPos; //mover objeto a nueva posición
 		}
 		if (useGravity && (rb2d.gravityScale != 1))
 		{

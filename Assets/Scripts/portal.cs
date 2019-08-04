@@ -6,6 +6,7 @@ public class portal : MonoBehaviour
 {
 	sceneController scenecontroller;
 	bool troncoHaPasado;
+	public int area;
 
     void Start()
     {
@@ -20,10 +21,11 @@ public class portal : MonoBehaviour
 		{
 			troncoHaPasado = true;
 			Debug.Log("ha pasado");
+			scenecontroller.PasarTronco();
 		}
 		else if (collision.gameObject.CompareTag("Player") && troncoHaPasado)
 		{
-			scenecontroller.NextArea();
+			scenecontroller.NextArea(area);
 		}
 	}
 }

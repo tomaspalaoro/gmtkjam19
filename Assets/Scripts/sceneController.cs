@@ -11,52 +11,108 @@ public class sceneController : MonoBehaviour
 	public Vector3 primeraPos;
 	public Vector3 segundaPos;
 	public Vector3 terceraPos;
-	//public Vector3 cuartaPos;
+	public Vector3 cuartaPos;
+	Vector3 platformPosition;
 
 	int area;
 
 	private void Start()
 	{
-		area = 1;
+		area = 0;
 		player.transform.position = primeraPos;
+
+		platform.SetActive(true);
+		platformPosition = primeraPos;
+		platformPosition.x += 6f;
+		platform.transform.position = platformPosition;
+
 		blackPanel.SetActive(false);
 	}
 
-	public void NextArea()
+	public void Respawn()
 	{
+		switch (area)
+		{
+			case 3:
+				player.transform.position = cuartaPos;
+				break;
+			case 2:
+				player.transform.position = terceraPos;
+				break;
+			case 1:
+				player.transform.position = segundaPos;
+				break;
+			case 0:
+				player.transform.position = primeraPos;
+				break;
+			default:
+				print("Incorrect level.");
+				break;
+		}
+	}
+
+	public void NextArea(int numero)
+	{
+		area = numero;
 		StartCoroutine(GotoNextArea());
 		blackPanel.SetActive(true);
+	}
+
+	public void PasarTronco()
+	{
+		platform.SetActive(false);
 	}
 
 	IEnumerator GotoNextArea()
 	{
 		yield return new WaitForSeconds(0.9f);
-		if (area == 1)
+
+		switch (area)
 		{
-			area = 2;
-			player.transform.position = segundaPos;
+			case 3:
+				player.transform.position = cuartaPos;
 
-			Vector3 platformPosition = segundaPos;
-			platformPosition.x -= 3f;
-			platform.transform.position = platformPosition;
+				platform.SetActive(true);
+				platformPosition = cuartaPos;
+				platformPosition.x += 4f;
+				platform.transform.position = platformPosition;
 
-			bg.transform.position = new Vector3(100, 0, 20);
+				bg.transform.position = new Vector3(200, 0, 20);
+				Debug.Log("ir a area 4");
+				break;
+			case 2:
+				player.transform.position = terceraPos;
+
+				platform.SetActive(true);
+				platformPosition = terceraPos;
+				platformPosition.x += 4f;
+				platform.transform.position = platformPosition;
+
+				bg.transform.position = new Vector3(200, 0, 20);
+				Debug.Log("ir a area 3");
+				break;
+			case 1:
+				player.transform.position = segundaPos;
+
+				platform.SetActive(true);
+				platformPosition = segundaPos;
+				platformPosition.x += 4f;
+				platform.transform.position = platformPosition;
+
+				bg.transform.position = new Vector3(100, 0, 20);
+				Debug.Log("ir a area 2");
+				break;
+			default:
+				print("Incorrect level.");
+				break;
 		}
-		else if (area == 2)
-		{
-			area = 3;
-			player.transform.position = terceraPos;
 
-			Vector3 platformPosition = terceraPos;
-			platformPosition.x -= 3f;
-			platform.transform.position = platformPosition;
+		StartCoroutine(DesactivarPanel());		
+	}
 
-			bg.transform.position = new Vector3(200, 0, 20);
-		}
-		else if (area == 3)
-		{
-			area = 4;
-			//player.transform.position = cuartaPos;
-		}
+	IEnumerator DesactivarPanel()
+	{
+		yield return new WaitForSeconds(1f);
+		blackPanel.SetActive(false);
 	}
 }

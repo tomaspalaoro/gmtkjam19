@@ -5,6 +5,7 @@ using UnityEngine;
 public class mageMovement : MonoBehaviour
 {
 	public mageController controller;
+	public sceneController escena;
 	public float runSpeed;
 
 	Animator animator;
@@ -61,4 +62,12 @@ public class mageMovement : MonoBehaviour
 		animator.SetBool("isJumping", false);
 	}
 	*/
+
+	private void OnCollisionEnter2D(Collision2D c1)
+	{
+		if (c1.collider.gameObject.CompareTag("deadly"))
+		{
+			escena.Respawn();
+		}
+	}
 }
