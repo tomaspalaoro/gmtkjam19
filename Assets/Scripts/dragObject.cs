@@ -14,6 +14,8 @@ public class dragObject : MonoBehaviour
 	Vector3 playerStartPos;
 	Vector3 newPos;
 
+	//public GameObject mago;
+
 
 	private void Awake()
 	{
@@ -39,6 +41,7 @@ public class dragObject : MonoBehaviour
 			dragging = false;
 			if (!useGravity) useGravity = true;
 			if (particulas.activeSelf) particulas.SetActive(false);
+			if (mageMovement.usandoMagia) mageMovement.usandoMagia = false;
 		}		
 
 		if (dragging)
@@ -69,7 +72,9 @@ public class dragObject : MonoBehaviour
 	{
 		if (enArea && !colisionando)
 		{
+			//Start dragging
 			dragging = true;
+			mageMovement.usandoMagia = true;
 
 			//Posiciones iniciales al empezar a arrastrar
 			mouseStartPos = GetMousePos();
@@ -108,21 +113,20 @@ public class dragObject : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D trigger)
+	public void DentroDeAlcance()
 	{
-		if (trigger.gameObject.CompareTag("magic"))
-		{
-			if (!enArea) enArea = true;
-			Debug.Log("area tocada");
-		}
+		if (!enArea) enArea = true;
+		Debug.Log("area tocada");
 	}
-	private void OnTriggerExit2D(Collider2D trigger)
+
+	public void FueraDeAlcance()
 	{
 		if (enArea) enArea = false;
 		//Stop Dragging
 		if (dragging) dragging = false;
 		if (!useGravity) useGravity = true;
 		if (particulas.activeSelf) particulas.SetActive(false);
+		if (mageMovement.usandoMagia) mageMovement.usandoMagia = false;
 
 		Debug.Log("area left");
 	}

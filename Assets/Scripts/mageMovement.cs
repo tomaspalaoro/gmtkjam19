@@ -11,6 +11,8 @@ public class mageMovement : MonoBehaviour
 	float horizontalMove;
 	bool jump;
 
+	public static bool usandoMagia;
+
 	private void Awake()
 	{
 		animator = gameObject.GetComponent<Animator>();
@@ -20,13 +22,24 @@ public class mageMovement : MonoBehaviour
 	{
 		horizontalMove = 0f;
 		jump = false;
+		usandoMagia = false;
 	}
 
 	void Update()
     {
-		horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+		if (!usandoMagia)
+		{
+			horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
 
-		animator.SetFloat("speed", Mathf.Abs(horizontalMove));
+			animator.SetFloat("speed", Mathf.Abs(horizontalMove));
+
+			animator.SetBool("isDragging", false);
+		}
+		else
+		{
+			horizontalMove = 0;
+			animator.SetBool("isDragging", true);
+		}
 
 		if(Input.GetButtonDown("Jump"))
 		{

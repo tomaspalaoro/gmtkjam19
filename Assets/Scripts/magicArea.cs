@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class magicArea : MonoBehaviour
 {
-	Vector3 posicionInicial;
+	//Vector3 posicionInicial;
 	public GameObject mago;
+	public GameObject plataforma;
 
 	private void Awake()
 	{
-		this.posicionInicial = new Vector3(this.gameObject.transform.localPosition.x, this.gameObject.transform.localPosition.y, this.gameObject.transform.localPosition.z);
+		//this.posicionInicial = new Vector3(this.gameObject.transform.localPosition.x, this.gameObject.transform.localPosition.y, this.gameObject.transform.localPosition.z);
 	}
 
 	void Update()
 	{
-		this.transform.position = new Vector3(mago.transform.position.x + posicionInicial.x, this.transform.position.y, this.transform.position.z); //el fondo sigue al jugador
+		this.transform.position = new Vector3(mago.transform.position.x + 1, this.transform.position.y, this.transform.position.z); //el fondo sigue al jugador
+	}
+
+	private void OnTriggerEnter2D(Collider2D trigger)
+	{
+		if (trigger.gameObject.CompareTag("platform"))
+		{
+			plataforma.GetComponent<dragObject>().DentroDeAlcance();
+		}
+	}
+	private void OnTriggerExit2D(Collider2D trigger)
+	{
+		if (trigger.gameObject.CompareTag("platform"))
+		{
+			plataforma.GetComponent<dragObject>().FueraDeAlcance();
+		}
 	}
 }

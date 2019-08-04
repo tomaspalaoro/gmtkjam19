@@ -6,6 +6,7 @@ TagManager:
   tags:
   - magic
   - wall
+  - platform
   layers:
   - Default
   - TransparentFX
