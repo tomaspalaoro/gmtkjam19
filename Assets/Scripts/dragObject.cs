@@ -18,7 +18,7 @@ public class dragObject : MonoBehaviour
 	//Vector3 newPos;
 	RaycastHit2D hit;
 
-	//public GameObject mago;
+	public Rigidbody2D roca;
 
 
 	private void Awake()
@@ -35,6 +35,8 @@ public class dragObject : MonoBehaviour
 		enArea = false;
 		//colisionando = false;
 		particulas.SetActive(false);
+
+		roca.gravityScale = 0;
 	}
 	private Vector3 GetMousePos() //conseguir las coordenadas del ratón 2d del ratón
 	{
@@ -146,9 +148,22 @@ public class dragObject : MonoBehaviour
 	{
 		if (dragging) dragging = false;
 		rb2d.drag = 0f;
-		rb2d.angularDrag = 0f;
+		rb2d.angularDrag = 0.01f;
 		if (!useGravity) useGravity = true;
 		if (particulas.activeSelf) particulas.SetActive(false);
 		if (mageMovement.usandoMagia) mageMovement.usandoMagia = false;
+	}
+
+	private void OnCollisionEnter2D(Collision2D c1)
+	{
+		if (c1.collider.gameObject.CompareTag("rock"))
+		{
+			if (roca.gravityScale != 1)
+			{
+				roca.gravityScale = 1;
+			}
+
+			Debug.Log("roca falsa tocada");
+		}
 	}
 }

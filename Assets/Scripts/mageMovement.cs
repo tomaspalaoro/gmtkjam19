@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class mageMovement : MonoBehaviour
 {
 	public mageController controller;
 	public sceneController escena;
+	public GameObject vcamMago;
+	public GameObject vcamTronco;
 	public float runSpeed;
 
 	Animator animator;
@@ -24,6 +27,8 @@ public class mageMovement : MonoBehaviour
 		horizontalMove = 0f;
 		jump = false;
 		usandoMagia = false;
+		vcamTronco.SetActive(false);
+		vcamMago.SetActive(true);
 	}
 
 	void Update()
@@ -35,11 +40,20 @@ public class mageMovement : MonoBehaviour
 			animator.SetFloat("speed", Mathf.Abs(horizontalMove));
 
 			animator.SetBool("isDragging", false);
+
+			vcamTronco.SetActive(false);
+			vcamMago.SetActive(true);
 		}
 		else
 		{
 			horizontalMove = 0;
 			animator.SetBool("isDragging", true);
+
+			if (Input.GetKeyDown(KeyCode.E))
+			{
+				vcamTronco.SetActive(true);
+				vcamMago.SetActive(false);
+			}
 		}
 
 		if(Input.GetButtonDown("Jump"))

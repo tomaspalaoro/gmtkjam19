@@ -12,13 +12,20 @@ public class sceneController : MonoBehaviour
 	public Vector3 segundaPos;
 	public Vector3 terceraPos;
 	public Vector3 cuartaPos;
+	public Vector3 quintaPos;
 	Vector3 platformPosition;
+	Rigidbody2D rb2d;
 
 	int area;
 
+	private void Awake()
+	{
+		rb2d = platform.GetComponent<Rigidbody2D>();
+	}
+
 	private void Start()
 	{
-		area = 0;
+		area = 4; //nivel menos uno
 		player.transform.position = primeraPos;
 
 		platform.SetActive(true);
@@ -29,10 +36,21 @@ public class sceneController : MonoBehaviour
 		blackPanel.SetActive(false);
 	}
 
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			NextArea(area);
+		}
+	}
+
 	public void Respawn()
 	{
 		switch (area)
 		{
+			case 4:
+				player.transform.position = quintaPos;
+				break;
 			case 3:
 				player.transform.position = cuartaPos;
 				break;
@@ -60,6 +78,7 @@ public class sceneController : MonoBehaviour
 
 	public void PasarTronco()
 	{
+		mageMovement.usandoMagia = false;
 		platform.SetActive(false);
 	}
 
@@ -67,8 +86,28 @@ public class sceneController : MonoBehaviour
 	{
 		yield return new WaitForSeconds(0.9f);
 
+		//reset rigidbody
+		rb2d.velocity = Vector3.zero;
+		rb2d.angularVelocity = 0f;
+		rb2d.rotation = -90f;
+		mageMovement.usandoMagia = false;
+
 		switch (area)
 		{
+			case 5:
+				Debug.Log("Juego acabado");
+				break;
+			case 4:
+				player.transform.position = quintaPos;
+
+				platform.SetActive(true);
+				platformPosition = quintaPos;
+				platformPosition.x += 4f;
+				platform.transform.position = platformPosition;
+
+				bg.transform.position = new Vector3(400, -13.14f, 20);
+				Debug.Log("ir a area 5");
+				break;
 			case 3:
 				player.transform.position = cuartaPos;
 
@@ -77,7 +116,7 @@ public class sceneController : MonoBehaviour
 				platformPosition.x += 4f;
 				platform.transform.position = platformPosition;
 
-				bg.transform.position = new Vector3(200, 0, 20);
+				bg.transform.position = new Vector3(300, 0, 20);
 				Debug.Log("ir a area 4");
 				break;
 			case 2:
@@ -101,6 +140,17 @@ public class sceneController : MonoBehaviour
 
 				bg.transform.position = new Vector3(100, 0, 20);
 				Debug.Log("ir a area 2");
+				break;
+			case 0:
+				player.transform.position = primeraPos;
+
+				platform.SetActive(true);
+				platformPosition = primeraPos;
+				platformPosition.x += 6f;
+				platform.transform.position = platformPosition;
+
+				bg.transform.position = new Vector3(0, 0, 20);
+				Debug.Log("ir a area spawn");
 				break;
 			default:
 				print("Incorrect level.");

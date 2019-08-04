@@ -15,7 +15,7 @@ public class magicArea : MonoBehaviour
 
 	void Update()
 	{
-		this.transform.position = new Vector3(mago.transform.position.x + 1, this.transform.position.y, this.transform.position.z); //el fondo sigue al jugador
+		this.transform.position = new Vector3(mago.transform.position.x + 4, mago.transform.position.y + 1, this.transform.position.z); //el fondo sigue al jugador
 	}
 
 	private void OnTriggerEnter2D(Collider2D trigger)
